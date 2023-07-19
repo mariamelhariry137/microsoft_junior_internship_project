@@ -1,5 +1,7 @@
 const express = require("express");
-var game = require("./room")
+var objs = require("./room")
+var game =  objs.game
+var User =  objs.user
 const app = express();
 function generateRandomIntegerInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -20,12 +22,13 @@ app.post("/enter-room/:id",(req,res) =>{
         res.status(404)
         return
     }
-    let user = generateRandomIntegerInRange(1000,10000)
+    let userid = generateRandomIntegerInRange(1000,10000)
+    let user = new User(1000,userid)
     if(!Rooms[`${id}`].add_user(user)){
         res.send("User Limit Reached!")
         return
     }
-    res.send(`${user}`)
+    res.json(user)
 })
 
 app.post("/test",(req,reg)=>{

@@ -435,8 +435,6 @@ function Game(Room_ID) {
     this.Current_Round_Stocks = []
 }
 
-
-
 function Whichstock(Company_Name) {
     parameters: {
         companychoice: 'company'
@@ -467,11 +465,11 @@ Game.prototype.buy_stock = function (externalID, numStocks, Whichstock) {
     user.balance = user.balance - this.Current_Round_Stocks[WhichStock] * numStocks
     user.Stock_Value = user.Stock_Value + this.Current_Round_Stocks[WhichStock] * numStocks
 }
-Game.prototype.add_user = function(user_id){
-    if (this.User_Array.length == 4){
+Game.prototype.add_user = function (user) {
+    if (this.User_Array.length == 4) {
         return false
     }
-    this.User_Array[this.User_Array.length] = user_id
+    this.User_Array[this.User_Array.length] = user
     return true
 }
 Game.prototype.sell_stock = function (externalID) {
@@ -493,17 +491,17 @@ Game.prototype.sell_stock = function (externalID) {
 }
 
 
-function User(Balance) {
+function User (Balance, userid) {
     this.Balance = Balance
     this.Stock_Value = 0
     this.stocks = [0, 0, 0, 0]
-    this.user_id = generateRandomIntegerInRange(1000, 10000)
+    this.user_id = userid
 }
 
 function NetWorth(balance, Stock_Value) {
     for (let i = 0; i < 4; i++) {
         this.User_Array[i].NetWorth = User.Balance + User.Stock_Value
-}
+    }
 }
 
 
@@ -522,4 +520,8 @@ function leaderboard(User_Array) {
             }
         }
     }
+}
+module.exports = {
+    game: Game,
+    user: User,
 }
