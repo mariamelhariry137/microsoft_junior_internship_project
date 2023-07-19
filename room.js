@@ -432,23 +432,21 @@ app.get('/room', (req, res) => {
 function Game(Room_ID) {
     this.Room_ID = Room_ID
     this.User_Array = []
-    this.Company_Name = []
     this.Current_Round_Stocks = []
 }
-// Game.prototype.add_user = function (){
-//     if(this.User_Array.length < 4)
-// }
 
-function Whichstock (Company_Name){
-    parameters: {companychoice : 'company'
+
+function Whichstock(Company_Name) {
+    parameters: {
+        companychoice: 'company'
     }
     let which_stock
-        for (let i = 0; i<4 ; i++){
-            if (companychoice == Company_Name [i]){
-                which_stock = i
-            }
-}
-return which_stock
+    for (let i = 0; i < 4; i++) {
+        if (companychoice == Company_Name[i]) {
+            which_stock = i
+        }
+    }
+    return which_stock
 }
 
 Game.prototype.buy_stock = function (externalID, numStocks, Whichstock) {
@@ -468,7 +466,13 @@ Game.prototype.buy_stock = function (externalID, numStocks, Whichstock) {
     user.balance = user.balance - this.Current_Round_Stocks[WhichStock] * numStocks
     user.Stock_Value = user.Stock_Value + this.Current_Round_Stocks[WhichStock] * numStocks
 }
-
+Game.prototype.add_user = function(user_id){
+    if (this.User_Array.length == 4){
+        return false
+    }
+    this.User_Array[this.User_Array.length] = user_id
+    return true
+}
 Game.prototype.sell_stock = function (externalID) {
     let userFound = false
     let userIndex
@@ -495,27 +499,27 @@ function User(Balance) {
     this.user_id = generateRandomIntegerInRange(1000, 10000)
 }
 
-function NetWorth (balance,Stock_Value){
-     
+function NetWorth(balance, Stock_Value) {
     for (let i = 0; i < 4; i++) {
         this.User_Array[i].NetWorth = User.Balance + User.Stock_Value
-}
-}
-
-
-function leaderboard (User_Array){
-
-const leaderboardScore = this.User_Array.NetWorth;
-leaderboardScore.sort();
-console.log(leaderboardScore);
-
-let leaderboardNames = []
-
-for ( let i = 0; i<4; i++){
-    for ( let j = 0; i<4; j++){
-    if (leaderboardScore[i] == this.User_Array[j].NetWorth ){
-        leaderboardNames[i] = this.User_Array[j].user_id
     }
 }
-} 
+
+
+function leaderboard(User_Array) {
+
+    const leaderboardScore = this.User_Array.NetWorth;
+    leaderboardScore.sort();
+    console.log(leaderboardScore);
+
+    let leaderboardNames = []
+
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; i < 4; j++) {
+            if (leaderboardScore[i] == this.User_Array[j].NetWorth) {
+                leaderboardNames[i] = this.User_Array[j].user_id
+            }
+        }
+    }
 }
+module.exports = Game

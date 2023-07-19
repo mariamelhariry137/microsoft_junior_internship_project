@@ -1,14 +1,32 @@
 const express = require("express");
-
+var game = require("./room")
 const app = express();
-
+function generateRandomIntegerInRange(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 app.listen(3000, () => console.log("API server is running...",));
 
-let test = [];
+let Rooms = {};
 
-app.get("/test",(req,reg)=>{
-reg.json(test);
+app.get("/create-room",(req,res)=>{
+    var code = generateRandomIntegerInRange(1000,10000)
+    Rooms[`${code}`] = new game(code)
+    res.json(Rooms)
 });
+
+app.post("/enter-room/:id",(req,res) =>{
+    const id = parseInt(req.params.id);
+    if(!Rooms.hasOwnProperty(`${id}`)){
+        res.status(404)
+        return
+    }
+    let user = generateRandomIntegerInRange(1000,10000)
+    if(!Rooms[`${id}`].add_user(user)){
+        res.send("User Limit Reached!")
+        return
+    }
+    res.send(`${user}`)
+})
 
 app.post("/test",(req,reg)=>{
     const test  = {
