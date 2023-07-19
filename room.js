@@ -2,8 +2,8 @@ function generateRandomIntegerInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+/*
 app.get('/room', (req, res) => {
-
 
     server: {
 
@@ -425,6 +425,10 @@ app.get('/room', (req, res) => {
     }
 })
 
+
+
+*/
+
 function Game(Room_ID) {
     this.Room_ID = Room_ID
     this.User_Array = []
@@ -435,7 +439,19 @@ function Game(Room_ID) {
 //     if(this.User_Array.length < 4)
 // }
 
-Game.prototype.buy_stock = function (externalID, numStocks, WhichStock) {
+function Whichstock (Company_Name){
+    parameters: {companychoice : 'company'
+    }
+    let which_stock
+        for (let i = 0; i<4 ; i++){
+            if (companychoice == Company_Name [i]){
+                which_stock = i
+            }
+}
+return which_stock
+}
+
+Game.prototype.buy_stock = function (externalID, numStocks, Whichstock) {
     let userFound = false
     let userIndex
     for (let i = 0; i < 4; i++) {
@@ -467,8 +483,8 @@ Game.prototype.sell_stock = function (externalID) {
         return
     }
     let user = this.User_Array[userIndex]
-    user.balance = user.balance + this.Current_Round_Stocks[WhichStock] * numStocks
-    user.Stock_Value = user.Stock_Value - this.Current_Round_Stocks[WhichStock] * numStocks
+    user.balance = user.balance + this.Current_Round_Stocks[call(Whichstock)] * numStocks
+    user.Stock_Value = user.Stock_Value - this.Current_Round_Stocks[call(Whichstock)] * numStocks
 }
 
 
@@ -479,3 +495,27 @@ function User(Balance) {
     this.user_id = generateRandomIntegerInRange(1000, 10000)
 }
 
+function NetWorth (balance,Stock_Value){
+     
+    for (let i = 0; i < 4; i++) {
+        this.User_Array[i].NetWorth = User.Balance + User.Stock_Value
+}
+}
+
+
+function leaderboard (User_Array){
+
+const leaderboardScore = this.User_Array.NetWorth;
+leaderboardScore.sort();
+console.log(leaderboardScore);
+
+let leaderboardNames = []
+
+for ( let i = 0; i<4; i++){
+    for ( let j = 0; i<4; j++){
+    if (leaderboardScore[i] == this.User_Array[j].NetWorth ){
+        leaderboardNames[i] = this.User_Array[j].user_id
+    }
+}
+} 
+}
