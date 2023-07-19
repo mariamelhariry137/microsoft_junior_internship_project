@@ -3,7 +3,7 @@ function generateRandomIntegerInRange(min, max) {
 }
 
 /*
-app.get('/room', (req, res) => {
+
 
     server: {
 
@@ -439,6 +439,7 @@ function Game(Room_ID) {
 //     if(this.User_Array.length < 4)
 // }
 
+app.get('/room', (req, res) => {
 function Whichstock (Company_Name){
     parameters: {companychoice : 'company'
     }
@@ -498,7 +499,7 @@ function User(Balance) {
 function NetWorth (balance,Stock_Value){
      
     for (let i = 0; i < 4; i++) {
-        this.User_Array[i].NetWorth = User.Balance + User.Stock_Value
+        this.User_Array[i].NetWorth = User_Array.Balance + User_Array.Stock_Value
 }
 }
 
@@ -519,3 +520,4 @@ for ( let i = 0; i<4; i++){
 }
 } 
 }
+})
