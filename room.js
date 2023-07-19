@@ -3,7 +3,7 @@ function generateRandomIntegerInRange(min, max) {
 }
 
 /*
-app.get('/room', (req, res) => {
+
 
     server: {
 
@@ -436,6 +436,7 @@ function Game(Room_ID) {
 }
 
 
+
 function Whichstock(Company_Name) {
     parameters: {
         companychoice: 'company'
@@ -502,7 +503,7 @@ function User(Balance) {
 function NetWorth(balance, Stock_Value) {
     for (let i = 0; i < 4; i++) {
         this.User_Array[i].NetWorth = User.Balance + User.Stock_Value
-    }
+}
 }
 
 
@@ -522,4 +523,3 @@ function leaderboard(User_Array) {
         }
     }
 }
-module.exports = Game
