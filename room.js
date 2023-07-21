@@ -27,7 +27,7 @@ function Game(Room_ID) {
         }
     }
     this.set_current_stock_round(0)
-
+    this.set_next_stock_round(1)
 }
 
 // function Whichstock(Company_Name) {
@@ -55,6 +55,22 @@ Game.prototype.set_current_stock_round = function (index) {
     let stockJSON = [MSFT, IBM, AMZN, AAPL]
     for (let i = 0; i < 4; i++) {
         this.Current_Round_Stocks[i] = stockJSON[i][this.Stock_Dates[i][index]]
+    }
+}
+
+Game.prototype.set_next_stock_round = function (index) {
+    const fs = require('fs')
+    let MSFTdata = fs.readFileSync(`MSFT.json`)
+    let MSFT = JSON.parse(MSFTdata)
+    let IBMdata = fs.readFileSync(`IBM.json`)
+    let IBM = JSON.parse(IBMdata)
+    let AMZNdata = fs.readFileSync(`AMZN.json`)
+    let AMZN = JSON.parse(AMZNdata)
+    let AAPLdata = fs.readFileSync(`AAPL.json`);
+    let AAPL = JSON.parse(AAPLdata);
+    let stockJSON = [MSFT, IBM, AMZN, AAPL]
+    for (let i = 0; i < 4; i++) {
+        this.next_Round_Stocks[i] = stockJSON[i][this.Stock_Dates[i][index]]
     }
 }
 Game.prototype.buy_stock = function (externalID, numStocks, WhichStock) {
@@ -93,14 +109,26 @@ Game.prototype.add_user = function (user) {
         this.started = true
         const decrementInterval = setInterval(() => {
             if (this.Rounds_Left > 0) {
-                this.Rounds_Left--;
                 this.set_current_stock_round(10 - this.Rounds_Left)
+                this.updateStocks()
+                this.set_next_stock_round(10 - this.Rounds_Left + 1)
+                this.Rounds_Left--;
             } else {
                 clearInterval(decrementInterval);
             }
-        }, 60000);
+        }, 5000);
     }
     return true
+}
+Game.prototype.updateStocks = function(){
+    for (let i = 0; i < this.User_Array.length; i++) {
+        let val = 0
+        for (let j = 0; j < 4; j++) {
+            val = this.User_Array[i]["stocks"][j] * this.Current_Round_Stocks[j]["price"]
+        }
+        this.User_Array[i]["Stock_Value"] = val
+        
+    }
 }
 Game.prototype.leaderboard = function () {
     function compareUsers(a, b) {
@@ -115,7 +143,13 @@ Game.prototype.leaderboard = function () {
         }
     }
     this.User_Array.sort(compareUsers)
-    return this.User_Array
+    var Name_Arr = {}
+    var num = 1
+    this.User_Array.forEach((elem) => {
+        Name_Arr[num]= { name: elem.username }
+        num++
+    })
+    return Name_Arr
 }
 Game.prototype.sell_stock = function (externalID, numStocks, WhichStock) {
     if (!this.started) {
@@ -144,11 +178,12 @@ Game.prototype.sell_stock = function (externalID, numStocks, WhichStock) {
 }
 
 // User Object
-function User(Balance, userid) {
+function User(Balance, userid, username) {
     this.Balance = Balance
     this.Stock_Value = 0
     this.stocks = [0, 0, 0, 0]
     this.user_id = userid
+    this.username = username
 }
 
 // function NetWorth(balance, Stock_Value) {

@@ -41,12 +41,13 @@ app.post("/enter-room/:id", (req, res) => {
         res.status(404)
         return
     }
+    let username = req.body.username
     let userid = generateRandomIntegerInRange(1000, 10000)
-    let user = new User(1000, userid)
+    let user = new User(1000, userid,username)
     if (!Rooms[`${id}`].add_user(user)) {
         res.send("User Limit Reached!")
         return
-    }
+    }   
     res.json(user)
 })
 app.post("/actions/buy/:id", (req, res) => {
