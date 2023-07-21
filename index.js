@@ -1,8 +1,9 @@
 const express = require("express");
 var objs = require("./room")
-var game =  objs.game
-var User =  objs.user
+var game = objs.game
+var User = objs.user
 const app = express();
+app.use(express.json());
 function generateRandomIntegerInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -10,54 +11,74 @@ app.listen(3000, () => console.log("API server is running...",));
 
 let Rooms = {};
 
-app.get("/create-room",(req,res)=>{
-    var code = generateRandomIntegerInRange(1000,10000)
+app.get("/create-room", (req, res) => {
+    var code = generateRandomIntegerInRange(1000, 10000)
+    while (Rooms.hasOwnProperty(code)) {
+        var code = generateRandomIntegerInRange(1000, 10000)
+    }
     Rooms[`${code}`] = new game(code)
-    res.json(Rooms)
+    res.json(Rooms[`${code}`])
 });
-
-app.post("/enter-room/:id",(req,res) =>{
+app.get("/debug-game/:id", (req, res) => {
     const id = parseInt(req.params.id);
-    if(!Rooms.hasOwnProperty(`${id}`)){
+    if (!Rooms.hasOwnProperty(`${id}`)) {
         res.status(404)
         return
     }
-    let userid = generateRandomIntegerInRange(1000,10000)
-    let user = new User(1000,userid)
-    if(!Rooms[`${id}`].add_user(user)){
+    res.json(Rooms[`${id}`])
+})
+app.get("/started/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    if (!Rooms.hasOwnProperty(`${id}`)) {
+        res.status(404)
+        return
+    }
+    return res.send(Rooms[`${id}`].started)
+})
+app.post("/enter-room/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    if (!Rooms.hasOwnProperty(`${id}`)) {
+        res.status(404)
+        return
+    }
+    let userid = generateRandomIntegerInRange(1000, 10000)
+    let user = new User(1000, userid)
+    if (!Rooms[`${id}`].add_user(user)) {
         res.send("User Limit Reached!")
         return
     }
     res.json(user)
 })
+app.post("/actions/buy/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    if (!Rooms.hasOwnProperty(`${id}`)) {
+        res.status(404)
+        return
+    }
+    const stock = parseInt(req.body.stock)
+    const amount = parseInt(req.body.amount)
+    const user_id = req.body.id
 
-app.post("/test",(req,reg)=>{
-    const test  = {
-        id: test.length + 1,
-        title: req.body.title,
-    };
-    test.push(test);
-    res.status(201).json(test);
-    });
-app.get('/hi',(req,res)=>{
-    res.send('hi')
+    res.json(Rooms[`${id}`].buy_stock(user_id, amount, stock))
 })
-app.put ("/test/:id",(req,reg)=>{
-    const id = parseInt(req.params.id);
-    const test = test.find((t)=> t.id==id);
-    if (!test){
-        return res.status(404).json({error: "test not found"});
-    }
-    test.title = req.body.title||test.title;
-    res.json(test);
-});
 
-app.delete("/test/:id",(req,res)=>{
+app.post("/actions/sell/:id", (req, res) => {
     const id = parseInt(req.params.id);
-    const test = test.find((t)=> t.id==id);
-    if (index == -1){
-        return res.status(404).json({error: "test not found"});
+    if (!Rooms.hasOwnProperty(`${id}`)) {
+        res.status(404)
+        return
     }
-    test.splice(index,i);
-    res.status(204).json(test);
-});
+    const stock = parseInt(req.body.stock)
+    const amount = parseInt(req.body.amount)
+    const user_id = req.body.id
+
+    res.json(Rooms[`${id}`].sell_stock(user_id, amount, stock))
+})
+app.get("/leaderboard/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    if (!Rooms.hasOwnProperty(`${id}`)) {
+        res.status(404)
+        return
+    }
+    res.json(Rooms[`${id}`].leaderboard())
+})

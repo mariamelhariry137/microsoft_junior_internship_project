@@ -1,0 +1,30 @@
+GET http://localhost:3000/create-room HTTP/1.1
+###
+POST http://localhost:3000/enter-room/8781 HTTP/1.1
+###
+GET http://localhost:3000/started/8781 HTTP/1.1
+###
+GET http://localhost:3000/debug-game/8781 HTTP/1.1
+###
+Get
+###
+POST http://localhost:3000/actions/buy/8781 HTTP/1.1
+Content-Type: application/json
+
+{
+    "stock" : 3,
+    "amount" : 1,
+    "id": 5386
+
+}
+
+###
+POST http://localhost:3000/actions/sell/8781 HTTP/1.1
+Content-Type: application/json
+
+{
+    "stock" : 3,
+    "amount" : 1,
+    "id": 5386
+
+}
