@@ -100,6 +100,22 @@ Game.prototype.buy_stock = function (externalID, numStocks, WhichStock) {
     user.stocks[WhichStock] = user.stocks[WhichStock] + numStocks
     return user
 }
+Game.prototype.return_user = function (id){
+    let userFound = false
+    let userIndex
+    for (let i = 0; i < 4; i++) {
+        if (this.User_Array[i].user_id == id) {
+            userFound = true
+            userIndex = i
+            break
+        }
+    }
+    if (!userFound) {
+        return false
+    }
+
+    return this.User_Array[userIndex]
+}
 Game.prototype.add_user = function (user) {
     if (this.User_Array.length == 4) {
         return false

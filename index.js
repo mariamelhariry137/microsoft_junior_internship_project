@@ -1,13 +1,15 @@
 const express = require("express");
 var objs = require("./room")
+var cors = require('cors')
 var game = objs.game
 var User = objs.user
 const app = express();
 app.use(express.json());
+app.use(cors());
 function generateRandomIntegerInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-app.listen(3000, () => console.log("API server is running...",));
+app.listen(4000, () => console.log("API server is running...",));
 
 let Rooms = {};
 
@@ -27,6 +29,20 @@ app.get("/debug-game/:id", (req, res) => {
     }
     res.json(Rooms[`${id}`])
 })
+app.get("/get-user/:gameid", (req, res) => {
+    const id = parseInt(req.params.gameid);
+    if (!Rooms.hasOwnProperty(`${id}`)) {
+        res.status(404)
+        return
+    }
+    const user_id = req.body.id
+    const user = Rooms[`${id}`].return_user(user_id)
+    if (user === false) {
+        res.send(false)
+        return
+    }
+    res.json(user)
+})
 app.get("/started/:id", (req, res) => {
     const id = parseInt(req.params.id);
     if (!Rooms.hasOwnProperty(`${id}`)) {
@@ -43,11 +59,11 @@ app.post("/enter-room/:id", (req, res) => {
     }
     let username = req.body.username
     let userid = generateRandomIntegerInRange(1000, 10000)
-    let user = new User(1000, userid,username)
+    let user = new User(1000, userid, username)
     if (!Rooms[`${id}`].add_user(user)) {
         res.send("User Limit Reached!")
         return
-    }   
+    }
     res.json(user)
 })
 app.post("/actions/buy/:id", (req, res) => {
