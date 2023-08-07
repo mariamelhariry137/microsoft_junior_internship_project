@@ -100,7 +100,7 @@ Game.prototype.buy_stock = function (externalID, numStocks, WhichStock) {
     user.stocks[WhichStock] = user.stocks[WhichStock] + numStocks
     return user
 }
-Game.prototype.return_user = function (id){
+Game.prototype.return_user = function (id) {
     let userFound = false
     let userIndex
     for (let i = 0; i < 4; i++) {
@@ -136,14 +136,14 @@ Game.prototype.add_user = function (user) {
     }
     return true
 }
-Game.prototype.updateStocks = function(){
+Game.prototype.updateStocks = function () {
     for (let i = 0; i < this.User_Array.length; i++) {
         let val = 0
         for (let j = 0; j < 4; j++) {
             val = this.User_Array[i]["stocks"][j] * this.Current_Round_Stocks[j]["price"]
         }
         this.User_Array[i]["Stock_Value"] = val
-        
+
     }
 }
 Game.prototype.leaderboard = function () {
@@ -162,7 +162,7 @@ Game.prototype.leaderboard = function () {
     var Name_Arr = {}
     var num = 1
     this.User_Array.forEach((elem) => {
-        Name_Arr[num]= { name: elem.username }
+        Name_Arr[num] = { name: elem.username }
         num++
     })
     return Name_Arr
@@ -180,6 +180,7 @@ Game.prototype.sell_stock = function (externalID, numStocks, WhichStock) {
             break
         }
     }
+
     if (!userFound) {
         return
     }
@@ -202,29 +203,10 @@ function User(Balance, userid, username) {
     this.username = username
 }
 
-// function NetWorth(balance, Stock_Value) {
-//     for (let i = 0; i < 4; i++) {
-//         this.User_Array[i].NetWorth = User.Balance + User.Stock_Value
-//     }
-// }
 
 
-// function leaderboard(User_Array) {
 
-//     const leaderboardScore = this.User_Array.NetWorth;
-//     leaderboardScore.sort();
-//     console.log(leaderboardScore);
 
-//     let leaderboardNames = []
-
-//     for (let i = 0; i < 4; i++) {
-//         for (let j = 0; i < 4; j++) {
-//             if (leaderboardScore[i] == this.User_Array[j].NetWorth) {
-//                 leaderboardNames[i] = this.User_Array[j].user_id
-//             }
-//         }
-//     }
-// }
 // Helper functions
 function generateDateString() {
     const year = generateRandomIntegerInRange(1999, 2023);
