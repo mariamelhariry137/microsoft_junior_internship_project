@@ -42,6 +42,10 @@ function Game(Room_ID) {
 //     }
 //     return which_stock
 // }
+Game.prototype.get_current_stocks = function (){
+    console.log(this.Current_Round_Stocks)
+    return this.Current_Round_Stocks
+}
 Game.prototype.set_current_stock_round = function (index) {
     const fs = require('fs')
     let MSFTdata = fs.readFileSync(`MSFT.json`)
@@ -56,6 +60,7 @@ Game.prototype.set_current_stock_round = function (index) {
     for (let i = 0; i < 4; i++) {
         this.Current_Round_Stocks[i] = stockJSON[i][this.Stock_Dates[i][index]]
     }
+   
 }
 
 Game.prototype.set_next_stock_round = function (index) {
@@ -140,12 +145,12 @@ Game.prototype.updateStocks = function () {
     for (let i = 0; i < this.User_Array.length; i++) {
         let val = 0
         for (let j = 0; j < 4; j++) {
-            val = this.User_Array[i]["stocks"][j] * this.Current_Round_Stocks[j]["price"]
+            val += this.User_Array[i]["stocks"][j] * this.Current_Round_Stocks[j]["price"]
         }
         this.User_Array[i]["Stock_Value"] = val
-
     }
 }
+
 Game.prototype.leaderboard = function () {
     function compareUsers(a, b) {
         const aSum = a.Balance + a.Stock_Value;

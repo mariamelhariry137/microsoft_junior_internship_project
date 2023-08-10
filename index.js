@@ -15,6 +15,7 @@ app.listen(4000, () => console.log("API server is running...",));
 let Rooms = {};
 
 app.get("/create-room", (req, res) => {
+    console.log("request")
     var code = generateRandomIntegerInRange(1000, 10000)
     while (Rooms.hasOwnProperty(code)) {
         var code = generateRandomIntegerInRange(1000, 10000)
@@ -34,18 +35,25 @@ app.get("/debug-game/:id", (req, res) => {
 
 app.get("/get-user/:gameid", (req, res) => {
     const id = parseInt(req.params.gameid);
+
     if (!Rooms.hasOwnProperty(`${id}`)) {
-        res.status(404)
-        return
+        res.status(404).send("Room not found");
+        return;
     }
-    const user_id = req.body.id
-    const user = Rooms[`${id}`].return_user(user_id)
+
+    const user_id = req.query.id; 
+    console.log(user_id);
+
+    const user = Rooms[`${id}`].return_user(user_id);
+
     if (user === false) {
-        res.send(false)
-        return
+        res.status(404).send("User not found");
+        return;
     }
-    res.json(user)
-})
+
+    res.json(user);
+});
+
 app.get("/started/:id", (req, res) => {
     const id = parseInt(req.params.id);
     if (!Rooms.hasOwnProperty(`${id}`)) {
@@ -54,6 +62,23 @@ app.get("/started/:id", (req, res) => {
     }
     return res.send(Rooms[`${id}`].started)
 })
+
+app.get('/round-stocks/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    if (!Rooms.hasOwnProperty(`${id}`)) {
+        res.status(404)
+        return
+    }
+    let prices = Rooms[`${id}`].get_current_stocks()
+ 
+    res.json({
+        "AAPL": parseFloat(prices[0].price),
+        "AMZN": parseFloat(prices[1].price),
+        "IBM": parseFloat(prices[2].price),
+        "MSFT": parseFloat(prices[3].price),
+    })
+})
+
 app.post("/enter-room/:id", (req, res) => {
     const id = parseInt(req.params.id);
     if (!Rooms.hasOwnProperty(`${id}`)) {
